@@ -1,0 +1,119 @@
+.gallery-hero {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: var(--oxblood);
+  padding: 120px 0 80px;
+  text-align: center;
+}
+
+.gallery-hero h1 {
+  color: var(--oxblood);
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+.gallery-hero p {
+  font-size: 1.3rem;
+  opacity: 0.8;
+}
+
+.gallery-filters {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 10px 25px;
+  border: 2px solid var(--oxblood);
+  background: transparent;
+  color: var(--oxblood);
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  background: var(--oxblood);
+  color: var(--white);
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.gallery-item {
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(128, 0, 32, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.gallery-item:hover {
+  transform: translateY(-5px);
+}
+
+.gallery-image {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+}
+
+.gallery-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.3s ease;
+}
+
+.gallery-item:hover .gallery-image img {
+  transform: scale(1.1);
+}
+
+.gallery-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(128, 0, 32, 0.8));
+  color: var(--white);
+  padding: 2rem 1.5rem 1.5rem;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.gallery-item:hover .gallery-overlay {
+  transform: translateY(0);
+}
+
+.gallery-overlay h3 {
+  color: var(--white);
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+@media (max-width: 768px) {
+  .gallery-hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .gallery-filters {
+    gap: 0.5rem;
+  }
+  
+  .filter-btn {
+    padding: 8px 20px;
+    font-size: 0.9rem;
+  }
+}
