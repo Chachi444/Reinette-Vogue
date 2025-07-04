@@ -19,8 +19,9 @@ const BookAppointment = () => {
   const appointmentTypes = [
     { value: 'consultation', label: 'Initial Consultation' },
     { value: 'fitting', label: 'Fitting Appointment' },
-    { value: 'measurement', label: 'Measurements' },
-    { value: 'pickup', label: 'Pickup/Delivery' }
+    { value: 'pickup', label: 'Pickup/Delivery' },
+    { value: 'design_discussion', label: 'Design Discussion' },
+    { value: 'measurement', label: 'Measurements' }
   ];
 
   const timeSlots = [

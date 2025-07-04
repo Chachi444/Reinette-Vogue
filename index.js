@@ -378,6 +378,128 @@ app.post("/body-measurement", async (req, res) => {
   }
 });
 
+// GET endpoints to retrieve data
+
+// Get all appointments
+app.get("/appointments", async (req, res) => {
+  try {
+    const appointments = await Appointment.find().sort({ createdAt: -1 });
+    res.status(200).json({
+      message: "Appointments retrieved successfully",
+      count: appointments.length,
+      appointments: appointments
+    });
+  } catch (error) {
+    console.error("Error retrieving appointments:", error);
+    res.status(500).json({
+      error: "Failed to retrieve appointments",
+      details: error.message
+    });
+  }
+});
+
+// Get appointment by ID
+app.get("/appointments/:id", async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.params.id);
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+    res.status(200).json({
+      message: "Appointment retrieved successfully",
+      appointment: appointment
+    });
+  } catch (error) {
+    console.error("Error retrieving appointment:", error);
+    res.status(500).json({
+      error: "Failed to retrieve appointment",
+      details: error.message
+    });
+  }
+});
+
+// Get all gown measurements
+app.get("/gown-measurements", async (req, res) => {
+  try {
+    const measurements = await GownMeasurement.find().sort({ createdAt: -1 });
+    res.status(200).json({
+      message: "Gown measurements retrieved successfully",
+      count: measurements.length,
+      measurements: measurements
+    });
+  } catch (error) {
+    console.error("Error retrieving gown measurements:", error);
+    res.status(500).json({
+      error: "Failed to retrieve gown measurements",
+      details: error.message
+    });
+  }
+});
+
+// Get all trouser measurements
+app.get("/trouser-measurements", async (req, res) => {
+  try {
+    const measurements = await TrouserMeasurement.find().sort({ createdAt: -1 });
+    res.status(200).json({
+      message: "Trouser measurements retrieved successfully",
+      count: measurements.length,
+      measurements: measurements
+    });
+  } catch (error) {
+    console.error("Error retrieving trouser measurements:", error);
+    res.status(500).json({
+      error: "Failed to retrieve trouser measurements",
+      details: error.message
+    });
+  }
+});
+
+// Get all general measurements
+app.get("/general-measurements", async (req, res) => {
+  try {
+    const measurements = await GeneralMeasurement.find().sort({ createdAt: -1 });
+    res.status(200).json({
+      message: "General measurements retrieved successfully",
+      count: measurements.length,
+      measurements: measurements
+    });
+  } catch (error) {
+    console.error("Error retrieving general measurements:", error);
+    res.status(500).json({
+      error: "Failed to retrieve general measurements",
+      details: error.message
+    });
+  }
+});
+
+// Get measurements by customer email
+app.get("/measurements/customer/:email", async (req, res) => {
+  try {
+    const email = req.params.email;
+    
+    const [gownMeasurements, trouserMeasurements, generalMeasurements] = await Promise.all([
+      GownMeasurement.find({ customerEmail: email }),
+      TrouserMeasurement.find({ customerEmail: email }),
+      GeneralMeasurement.find({ customerEmail: email })
+    ]);
+
+    res.status(200).json({
+      message: "Customer measurements retrieved successfully",
+      customerEmail: email,
+      measurements: {
+        gown: gownMeasurements,
+        trouser: trouserMeasurements,
+        general: generalMeasurements
+      }
+    });
+  } catch (error) {
+    console.error("Error retrieving customer measurements:", error);
+    res.status(500).json({
+      error: "Failed to retrieve customer measurements",
+      details: error.message
+    });
+  }
+});
 
 app.post("/upload-inspiration", upload.array('inspirationImages', 5), async (req, res) => {
   try {
@@ -1002,4 +1124,133 @@ app.get("/payment/exchange-rate/:from/:to", async (req, res) => {
 });
 
 
+// GET endpoints to retrieve data
+
+// Get all appointments
+app.get("/appointments", async (req, res) => {
+  try {
+    const appointments = await Appointment.find().sort({ createdAt: -1 });
+    res.status(200).json({
+      message: "Appointments retrieved successfully",
+      count: appointments.length,
+      appointments: appointments
+    });
+  } catch (error) {
+    console.error("Error retrieving appointments:", error);
+    res.status(500).json({
+      error: "Failed to retrieve appointments",
+      details: error.message
+    });
+  }
+});
+
+// Get appointment by ID
+app.get("/appointments/:id", async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.params.id);
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+    res.status(200).json({
+      message: "Appointment retrieved successfully",
+      appointment: appointment
+    });
+  } catch (error) {
+    console.error("Error retrieving appointment:", error);
+    res.status(500).json({
+      error: "Failed to retrieve appointment",
+      details: error.message
+    });
+  }
+});
+
+// Get all gown measurements
+app.get("/gown-measurements", async (req, res) => {
+  try {
+    const measurements = await GownMeasurement.find().sort({ createdAt: -1 });
+    res.status(200).json({
+      message: "Gown measurements retrieved successfully",
+      count: measurements.length,
+      measurements: measurements
+    });
+  } catch (error) {
+    console.error("Error retrieving gown measurements:", error);
+    res.status(500).json({
+      error: "Failed to retrieve gown measurements",
+      details: error.message
+    });
+  }
+});
+
+// Get all trouser measurements
+app.get("/trouser-measurements", async (req, res) => {
+  try {
+    const measurements = await TrouserMeasurement.find().sort({ createdAt: -1 });
+    res.status(200).json({
+      message: "Trouser measurements retrieved successfully",
+      count: measurements.length,
+      measurements: measurements
+    });
+  } catch (error) {
+    console.error("Error retrieving trouser measurements:", error);
+    res.status(500).json({
+      error: "Failed to retrieve trouser measurements",
+      details: error.message
+    });
+  }
+});
+
+// Get all general measurements
+app.get("/general-measurements", async (req, res) => {
+  try {
+    const measurements = await GeneralMeasurement.find().sort({ createdAt: -1 });
+    res.status(200).json({
+      message: "General measurements retrieved successfully",
+      count: measurements.length,
+      measurements: measurements
+    });
+  } catch (error) {
+    console.error("Error retrieving general measurements:", error);
+    res.status(500).json({
+      error: "Failed to retrieve general measurements",
+      details: error.message
+    });
+  }
+});
+
+// Get measurements by customer email
+app.get("/measurements/customer/:email", async (req, res) => {
+  try {
+    const email = req.params.email;
     
+    const [gownMeasurements, trouserMeasurements, generalMeasurements] = await Promise.all([
+      GownMeasurement.find({ customerEmail: email }),
+      TrouserMeasurement.find({ customerEmail: email }),
+      GeneralMeasurement.find({ customerEmail: email })
+    ]);
+
+    res.status(200).json({
+      message: "Customer measurements retrieved successfully",
+      customerEmail: email,
+      measurements: {
+        gown: gownMeasurements,
+        trouser: trouserMeasurements,
+        general: generalMeasurements
+      }
+    });
+  } catch (error) {
+    console.error("Error retrieving customer measurements:", error);
+    res.status(500).json({
+      error: "Failed to retrieve customer measurements",
+      details: error.message
+    });
+  }
+});
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`🚀 Reinette-Vogue Server running on port ${PORT}`);
+  console.log(`📍 Server URL: http://localhost:${PORT}`);
+  console.log(`🗄️  Database: ${mongoose.connection.readyState === 1 ? 'Connected' : 'Connecting...'}`);
+  console.log(`⏰ Started at: ${new Date().toISOString()}`);
+});

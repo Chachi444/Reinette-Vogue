@@ -9,7 +9,9 @@ import About from './pages/About';
 import Gallery from './pages/Gallery';
 import Services from './pages/Services';
 import BookAppointment from './pages/BookAppointment';
+import Measurement from './pages/Measurement';
 import Contact from './pages/Contact';
+import AdminDashboard from './pages/AdminDashboard';
 import Footer from './components/Footer';
 
 function App() {
@@ -24,7 +26,9 @@ function App() {
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/services" element={<Services />} />
             <Route path="/book-appointment" element={<BookAppointment />} />
+            <Route path="/measurement" element={<Measurement />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/reinette-admin-dashboard-2025" element={<AdminDashboard />} />
           </Routes>
         </main>
         <Footer />

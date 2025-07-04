@@ -37,14 +37,14 @@ const Contact = () => {
     {
       icon: <Phone size={24} />,
       title: "Phone",
-      content: "0816-766-2286",
-      action: "tel:+2348167662286"
+      content: "+234-904-547-8863",
+      action: "tel:+2349045478863"
     },
     {
       icon: <Mail size={24} />,
       title: "Email",
-      content: "info@reinettesvogue.com",
-      action: "mailto:info@reinettesvogue.com"
+      content: "reinettevogue@gmail.com",
+      action: "mailto:reinettevogue@gmail.com"
     },
     {
       icon: <MapPin size={24} />,
@@ -115,9 +115,9 @@ const Contact = () => {
                 <h3>Follow Us</h3>
                 <p>Stay updated with our latest creations and behind-the-scenes content.</p>
                 <div className="social-links">
-                  <a href="https://instagram.com/reinettesvogue" className="social-link">Instagram</a>
-                  <a href="https://facebook.com/reinettesvogue" className="social-link">Facebook</a>
-                  <a href="https://pinterest.com/reinettesvogue" className="social-link">Pinterest</a>
+                  <a href="https://www.instagram.com/reinettes_vogue?igsh=MXNpbjd4YWs5MXE3dQ%3D%3D&utm_source=qr" className="social-link">Instagram</a>
+                  <a href="https://www.facebook.com/esther.godwin.773028" className="social-link">Facebook</a>
+                  <a href="https://www.tiktok.com/@reinettes_vogue?_r=1&_d=ed3l78mlk93a1a&sec_uid=MS4wLjABAAAAvZN8ql8_hRROui-xA1MxLKZRz2PxLzyn_Iq1zufLaWCJtKwVnCWuf_ogBAZRJMrk&share_author_id=6878664936374699009&sharer_language=en&source=h5_m&u_code=dek7mlb75h44ig&ug_btm=b8727,b0&social_share_type=4&utm_source=copy&sec_user_id=MS4wLjABAAAAvZN8ql8_hRROui-xA1MxLKZRz2PxLzyn_Iq1zufLaWCJtKwVnCWuf_ogBAZRJMrk&tt_from=copy&utm_medium=ios&utm_campaign=client_share&enable_checksum=1&user_id=6878664936374699009&share_link_id=A1F7BFCB-7F7A-42BC-9D24-F167A7B7DB2F&share_app_id=1233" className="social-link">TikTok</a>
                 </div>
               </div>
             </motion.div>
