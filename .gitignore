@@ -6,3 +6,6 @@ env
 
 .vscode
 /.vscode
+
+netlify.toml
+/netlify.toml

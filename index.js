@@ -68,11 +68,7 @@ async function connectDB() {
 }
 
 
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`🚀 Reinette-Vogue server is running on port ${PORT}`);
-  });
-});
+// MongoDB connection and server startup will be handled at the end
 
 
 
@@ -1412,10 +1408,12 @@ app.get("/measurements/customer/:email", async (req, res) => {
   }
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`🚀 Reinette-Vogue Server running on port ${PORT}`);
-  console.log(`📍 Server URL: http://localhost:${PORT}`);
-  console.log(`🗄️  Database: ${mongoose.connection.readyState === 1 ? 'Connected' : 'Connecting...'}`);
-  console.log(`⏰ Started at: ${new Date().toISOString()}`);
+// Start the server with proper MongoDB connection
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`🚀 Reinette-Vogue Server running on port ${PORT}`);
+    console.log(`📍 Server URL: http://localhost:${PORT}`);
+    console.log(`🗄️  Database: ${mongoose.connection.readyState === 1 ? 'Connected' : 'Connecting...'}`);
+    console.log(`⏰ Started at: ${new Date().toISOString()}`);
+  });
 });
