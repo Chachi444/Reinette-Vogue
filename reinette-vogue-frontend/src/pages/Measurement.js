@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Ruler, User, Clock, Package } from 'lucide-react';
+import { Ruler, User, Package, Upload, X, Clock } from 'lucide-react';
 import './Measurement.css';
 
 const Measurement = () => {
   const [activeTab, setActiveTab] = useState('gown');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
+  const [selectedImages, setSelectedImages] = useState({
+    gown: [],
+    trouser: [],
+    general: []
+  });
+  const [previewImages, setPreviewImages] = useState({
+    gown: [],
+    trouser: [],
+    general: []
+  });
 
   // Form state for different measurement types
   const [gownData, setGownData] = useState({
@@ -31,7 +41,10 @@ const Measurement = () => {
     fullLength: '',
     measurementUnit: 'inches',
     notes: '',
-    estimatedDelivery: ''
+    estimatedDelivery: '',
+    styleDescription: '',
+    preferredColors: '',
+    occasion: ''
   });
 
   const [trouserData, setTrouserData] = useState({
@@ -44,7 +57,10 @@ const Measurement = () => {
     trouserLength: '',
     measurementUnit: 'inches',
     notes: '',
-    estimatedDelivery: ''
+    estimatedDelivery: '',
+    styleDescription: '',
+    preferredColors: '',
+    occasion: ''
   });
 
   const [generalData, setGeneralData] = useState({
@@ -55,7 +71,10 @@ const Measurement = () => {
     hips: '',
     height: '',
     measurementUnit: 'inches',
-    notes: ''
+    notes: '',
+    styleDescription: '',
+    preferredColors: '',
+    occasion: ''
   });
 
   const tabs = [
@@ -85,43 +104,100 @@ const Measurement = () => {
     });
   };
 
+  const handleImageUpload = (e, tabType) => {
+    const files = Array.from(e.target.files);
+    if (files.length + selectedImages[tabType].length > 5) {
+      alert('You can only upload up to 5 images per measurement type.');
+      return;
+    }
+
+    const newImages = [...selectedImages[tabType], ...files];
+    setSelectedImages({
+      ...selectedImages,
+      [tabType]: newImages
+    });
+
+    // Create preview URLs
+    const newPreviews = files.map(file => URL.createObjectURL(file));
+    setPreviewImages({
+      ...previewImages,
+      [tabType]: [...previewImages[tabType], ...newPreviews]
+    });
+  };
+
+  const removeImage = (index, tabType) => {
+    const newImages = selectedImages[tabType].filter((_, i) => i !== index);
+    const newPreviews = previewImages[tabType].filter((_, i) => i !== index);
+    
+    // Revoke the URL to free memory
+    URL.revokeObjectURL(previewImages[tabType][index]);
+    
+    setSelectedImages({
+      ...selectedImages,
+      [tabType]: newImages
+    });
+    setPreviewImages({
+      ...previewImages,
+      [tabType]: newPreviews
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     
     try {
       let endpoint = '';
-      let data = {};
+      let formData = new FormData();
+      let measurementData = {};
       
       switch (activeTab) {
         case 'gown':
           endpoint = 'body-measurement/gown';
-          data = gownData;
+          measurementData = gownData;
+          selectedImages.gown.forEach((file, index) => {
+            formData.append('inspirationImages', file);
+          });
           break;
         case 'trouser':
           endpoint = 'body-measurement/trouser';
-          data = trouserData;
+          measurementData = trouserData;
+          selectedImages.trouser.forEach((file, index) => {
+            formData.append('inspirationImages', file);
+          });
           break;
         case 'general':
           endpoint = 'body-measurement';
-          data = generalData;
+          measurementData = generalData;
+          selectedImages.general.forEach((file, index) => {
+            formData.append('inspirationImages', file);
+          });
           break;
         default:
           break;
       }
 
+      // Add measurement data to FormData
+      Object.keys(measurementData).forEach(key => {
+        if (measurementData[key] !== '') {
+          formData.append(key, measurementData[key]);
+        }
+      });
+
+      // Add style inspiration description
+      formData.append('styleDescription', measurementData.styleDescription || '');
+      formData.append('preferredColors', measurementData.preferredColors || '');
+      formData.append('occasion', measurementData.occasion || '');
+
       // Replace with your backend URL
       const response = await fetch(`http://localhost:5000/${endpoint}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+        body: formData, // Using FormData instead of JSON for file upload
       });
 
       if (response.ok) {
-        setSubmitMessage('Measurements submitted successfully! We will contact you soon.');
-        // Reset form based on active tab
+        setSubmitMessage('Measurements and style inspiration submitted successfully! We will contact you soon.');
+        // Reset forms and images
         switch (activeTab) {
           case 'gown':
             setGownData({
@@ -146,7 +222,10 @@ const Measurement = () => {
               fullLength: '',
               measurementUnit: 'inches',
               notes: '',
-              estimatedDelivery: ''
+              estimatedDelivery: '',
+              styleDescription: '',
+              preferredColors: '',
+              occasion: ''
             });
             break;
           case 'trouser':
@@ -160,7 +239,10 @@ const Measurement = () => {
               trouserLength: '',
               measurementUnit: 'inches',
               notes: '',
-              estimatedDelivery: ''
+              estimatedDelivery: '',
+              styleDescription: '',
+              preferredColors: '',
+              occasion: ''
             });
             break;
           case 'general':
@@ -172,12 +254,26 @@ const Measurement = () => {
               hips: '',
               height: '',
               measurementUnit: 'inches',
-              notes: ''
+              notes: '',
+              styleDescription: '',
+              preferredColors: '',
+              occasion: ''
             });
             break;
           default:
             break;
         }
+        
+        // Clear images
+        previewImages[activeTab].forEach(url => URL.revokeObjectURL(url));
+        setSelectedImages({
+          ...selectedImages,
+          [activeTab]: []
+        });
+        setPreviewImages({
+          ...previewImages,
+          [activeTab]: []
+        });
       } else {
         setSubmitMessage('Error submitting measurements. Please try again.');
       }
@@ -691,6 +787,115 @@ const Measurement = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Style Inspiration Section */}
+                <div className="form-section">
+                  <h3>Style Inspiration</h3>
+                  <p className="section-description">
+                    Upload inspiration images and describe your vision to help us create your perfect design.
+                  </p>
+                  
+                  <div className="form-group">
+                    <label htmlFor="styleDescription">Design Description</label>
+                    <textarea
+                      id="styleDescription"
+                      name="styleDescription"
+                      value={
+                        activeTab === 'gown' ? gownData.styleDescription :
+                        activeTab === 'trouser' ? trouserData.styleDescription :
+                        generalData.styleDescription
+                      }
+                      onChange={
+                        activeTab === 'gown' ? handleGownChange :
+                        activeTab === 'trouser' ? handleTrouserChange :
+                        handleGeneralChange
+                      }
+                      placeholder="Describe your dream design, style preferences, details you'd like to include..."
+                      rows="3"
+                    />
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="preferredColors">Preferred Colors</label>
+                      <input
+                        type="text"
+                        id="preferredColors"
+                        name="preferredColors"
+                        value={
+                          activeTab === 'gown' ? gownData.preferredColors :
+                          activeTab === 'trouser' ? trouserData.preferredColors :
+                          generalData.preferredColors
+                        }
+                        onChange={
+                          activeTab === 'gown' ? handleGownChange :
+                          activeTab === 'trouser' ? handleTrouserChange :
+                          handleGeneralChange
+                        }
+                        placeholder="e.g., Burgundy, Gold, Navy Blue"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="occasion">Occasion</label>
+                      <input
+                        type="text"
+                        id="occasion"
+                        name="occasion"
+                        value={
+                          activeTab === 'gown' ? gownData.occasion :
+                          activeTab === 'trouser' ? trouserData.occasion :
+                          generalData.occasion
+                        }
+                        onChange={
+                          activeTab === 'gown' ? handleGownChange :
+                          activeTab === 'trouser' ? handleTrouserChange :
+                          handleGeneralChange
+                        }
+                        placeholder="e.g., Wedding, Business, Evening Party"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Image Upload */}
+                  <div className="form-group">
+                    <label>Inspiration Images (Optional)</label>
+                    <div className="image-upload-section">
+                      <div className="upload-area">
+                        <input
+                          type="file"
+                          id={`images-${activeTab}`}
+                          accept="image/*"
+                          multiple
+                          onChange={(e) => handleImageUpload(e, activeTab)}
+                          className="file-input"
+                        />
+                        <label htmlFor={`images-${activeTab}`} className="upload-label">
+                          <Upload size={24} />
+                          <span>Click to upload images</span>
+                          <small>Up to 5 images (JPG, PNG, WebP)</small>
+                        </label>
+                      </div>
+
+                      {/* Image Previews */}
+                      {previewImages[activeTab] && previewImages[activeTab].length > 0 && (
+                        <div className="image-previews">
+                          {previewImages[activeTab].map((preview, index) => (
+                            <div key={index} className="image-preview">
+                              <img src={preview} alt={`Preview ${index + 1}`} />
+                              <button
+                                type="button"
+                                className="remove-image"
+                                onClick={() => removeImage(index, activeTab)}
+                              >
+                                <X size={16} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
 
                 {/* Notes Section */}
                 <div className="form-group">

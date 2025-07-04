@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Users, Ruler, Mail, Phone, Clock, Package, User, Lock } from 'lucide-react';
+import { Calendar, Ruler, Package, User, Lock } from 'lucide-react';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {

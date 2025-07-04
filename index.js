@@ -189,7 +189,7 @@ app.post("/book-appointment", async (req, res) => {
 });
 
 
-app.post("/body-measurement/gown", async (req, res) => {
+app.post("/body-measurement/gown", upload.array('inspirationImages', 5), async (req, res) => {
   try {
     const {
       customerName,
@@ -212,11 +212,13 @@ app.post("/body-measurement/gown", async (req, res) => {
       knee,
       fullLength,
       notes,
-      estimatedDelivery
+      estimatedDelivery,
+      styleDescription,
+      preferredColors,
+      occasion
     } = req.body;
 
-
-   
+    // Basic validation
     if (!customerName || !customerEmail) {
       return res.status(400).json({
         error: "Customer name and email are required",
@@ -224,9 +226,54 @@ app.post("/body-measurement/gown", async (req, res) => {
       });
     }
 
+    // Handle image uploads
+    let uploadedImages = [];
+    if (req.files && req.files.length > 0) {
+      console.log(`📸 Uploading ${req.files.length} gown inspiration images to Cloudinary...`);
+      
+      const uploadPromises = req.files.map(async (file) => {
+        try {
+          const result = await uploadToCloudinary(file.buffer, {
+            public_id: `gown-inspiration-${Date.now()}-${Math.round(Math.random() * 1E9)}`,
+            folder: `reinette-vogue/gown-inspiration`
+          });
+          
+          return {
+            publicId: result.public_id,
+            originalName: file.originalname,
+            cloudinaryUrl: result.secure_url,
+            optimizedUrl: cloudinary.url(result.public_id, {
+              quality: 'auto',
+              fetch_format: 'auto',
+              width: 800,
+              height: 600,
+              crop: 'limit'
+            }),
+            size: file.size,
+            format: result.format,
+            width: result.width,
+            height: result.height
+          };
+        } catch (error) {
+          console.error('Cloudinary upload error:', error);
+          throw error;
+        }
+      });
+      
+      try {
+        uploadedImages = await Promise.all(uploadPromises);
+        console.log(`✅ Successfully uploaded ${uploadedImages.length} images to Cloudinary`);
+      } catch (error) {
+        console.error('Error uploading images:', error);
+        return res.status(500).json({
+          error: "Failed to upload images",
+          details: error.message,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
 
-
-
+    // Create new gown measurement with style inspiration
     const newGownMeasurement = new GownMeasurement({
       customerName,
       customerEmail,
@@ -248,19 +295,24 @@ app.post("/body-measurement/gown", async (req, res) => {
       knee,
       fullLength,
       notes: notes || "",
-      estimatedDelivery: estimatedDelivery ? new Date(estimatedDelivery) : null
+      estimatedDelivery: estimatedDelivery ? new Date(estimatedDelivery) : null,
+      styleInspiration: {
+        images: uploadedImages,
+        description: styleDescription || "",
+        preferredColors: preferredColors || "",
+        occasion: occasion || "",
+        hasImages: uploadedImages.length > 0
+      }
     });
-
 
     const savedMeasurement = await newGownMeasurement.save();
 
-
     res.status(201).json({
-      message: "Gown measurements recorded successfully",
+      message: "Gown measurements and style inspiration recorded successfully",
       measurement: savedMeasurement,
+      imageCount: uploadedImages.length,
       timestamp: new Date().toISOString()
     });
-
 
   } catch (error) {
     console.error("Error saving gown measurements:", error);
@@ -273,7 +325,7 @@ app.post("/body-measurement/gown", async (req, res) => {
 });
 
 
-app.post("/body-measurement/trouser", async (req, res) => {
+app.post("/body-measurement/trouser", upload.array('inspirationImages', 5), async (req, res) => {
   try {
     const {
       customerName,
@@ -284,11 +336,13 @@ app.post("/body-measurement/trouser", async (req, res) => {
       laps,
       trouserLength,
       notes,
-      estimatedDelivery
+      estimatedDelivery,
+      styleDescription,
+      preferredColors,
+      occasion
     } = req.body;
 
-
-   
+    // Basic validation
     if (!customerName || !customerEmail) {
       return res.status(400).json({
         error: "Customer name and email are required",
@@ -296,8 +350,54 @@ app.post("/body-measurement/trouser", async (req, res) => {
       });
     }
 
+    // Handle image uploads
+    let uploadedImages = [];
+    if (req.files && req.files.length > 0) {
+      console.log(`📸 Uploading ${req.files.length} trouser inspiration images to Cloudinary...`);
+      
+      const uploadPromises = req.files.map(async (file) => {
+        try {
+          const result = await uploadToCloudinary(file.buffer, {
+            public_id: `trouser-inspiration-${Date.now()}-${Math.round(Math.random() * 1E9)}`,
+            folder: `reinette-vogue/trouser-inspiration`
+          });
+          
+          return {
+            publicId: result.public_id,
+            originalName: file.originalname,
+            cloudinaryUrl: result.secure_url,
+            optimizedUrl: cloudinary.url(result.public_id, {
+              quality: 'auto',
+              fetch_format: 'auto',
+              width: 800,
+              height: 600,
+              crop: 'limit'
+            }),
+            size: file.size,
+            format: result.format,
+            width: result.width,
+            height: result.height
+          };
+        } catch (error) {
+          console.error('Cloudinary upload error:', error);
+          throw error;
+        }
+      });
+      
+      try {
+        uploadedImages = await Promise.all(uploadPromises);
+        console.log(`✅ Successfully uploaded ${uploadedImages.length} images to Cloudinary`);
+      } catch (error) {
+        console.error('Error uploading images:', error);
+        return res.status(500).json({
+          error: "Failed to upload images",
+          details: error.message,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
 
-   
+    // Create new trouser measurement with style inspiration
     const newTrouserMeasurement = new TrouserMeasurement({
       customerName,
       customerEmail,
@@ -307,20 +407,24 @@ app.post("/body-measurement/trouser", async (req, res) => {
       laps,
       trouserLength,
       notes: notes || "",
-      estimatedDelivery: estimatedDelivery ? new Date(estimatedDelivery) : null
+      estimatedDelivery: estimatedDelivery ? new Date(estimatedDelivery) : null,
+      styleInspiration: {
+        images: uploadedImages,
+        description: styleDescription || "",
+        preferredColors: preferredColors || "",
+        occasion: occasion || "",
+        hasImages: uploadedImages.length > 0
+      }
     });
 
-
- 
     const savedMeasurement = await newTrouserMeasurement.save();
 
-
     res.status(201).json({
-      message: "Trouser measurements recorded successfully",
+      message: "Trouser measurements and style inspiration recorded successfully",
       measurement: savedMeasurement,
+      imageCount: uploadedImages.length,
       timestamp: new Date().toISOString()
     });
-
 
   } catch (error) {
     console.error("Error saving trouser measurements:", error);
@@ -335,18 +439,74 @@ app.post("/body-measurement/trouser", async (req, res) => {
 
 
 
-app.post("/body-measurement", async (req, res) => {
+app.post("/body-measurement", upload.array('inspirationImages', 5), async (req, res) => {
   try {
-    const { customerName, customerEmail, bust, waist, hips, height, notes } = req.body;
-
+    const { 
+      customerName, 
+      customerEmail, 
+      bust, 
+      waist, 
+      hips, 
+      height, 
+      notes,
+      styleDescription,
+      preferredColors,
+      occasion
+    } = req.body;
 
     // Basic validation
     if (!customerName || !customerEmail || !bust || !waist || !hips || !height) {
       return res.status(400).json({ error: "Customer name, email, bust, waist, hips, and height are required" });
     }
 
+    // Handle image uploads
+    let uploadedImages = [];
+    if (req.files && req.files.length > 0) {
+      console.log(`📸 Uploading ${req.files.length} general inspiration images to Cloudinary...`);
+      
+      const uploadPromises = req.files.map(async (file) => {
+        try {
+          const result = await uploadToCloudinary(file.buffer, {
+            public_id: `general-inspiration-${Date.now()}-${Math.round(Math.random() * 1E9)}`,
+            folder: `reinette-vogue/general-inspiration`
+          });
+          
+          return {
+            publicId: result.public_id,
+            originalName: file.originalname,
+            cloudinaryUrl: result.secure_url,
+            optimizedUrl: cloudinary.url(result.public_id, {
+              quality: 'auto',
+              fetch_format: 'auto',
+              width: 800,
+              height: 600,
+              crop: 'limit'
+            }),
+            size: file.size,
+            format: result.format,
+            width: result.width,
+            height: result.height
+          };
+        } catch (error) {
+          console.error('Cloudinary upload error:', error);
+          throw error;
+        }
+      });
+      
+      try {
+        uploadedImages = await Promise.all(uploadPromises);
+        console.log(`✅ Successfully uploaded ${uploadedImages.length} images to Cloudinary`);
+      } catch (error) {
+        console.error('Error uploading images:', error);
+        return res.status(500).json({
+          error: "Failed to upload images",
+          details: error.message,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
 
- 
+    // Create new general measurement with style inspiration
     const newGeneralMeasurement = new GeneralMeasurement({
       customerName,
       customerEmail,
@@ -354,19 +514,24 @@ app.post("/body-measurement", async (req, res) => {
       waist,
       hips,
       height,
-      notes: notes || ""
+      notes: notes || "",
+      styleInspiration: {
+        images: uploadedImages,
+        description: styleDescription || "",
+        preferredColors: preferredColors || "",
+        occasion: occasion || "",
+        hasImages: uploadedImages.length > 0
+      }
     });
-
 
     const savedMeasurement = await newGeneralMeasurement.save();
 
-
     res.status(201).json({
-      message: "Body measurements recorded successfully",
+      message: "Body measurements and style inspiration recorded successfully",
       measurement: savedMeasurement,
+      imageCount: uploadedImages.length,
       timestamp: new Date().toISOString()
     });
-
 
   } catch (error) {
     console.error("Error saving general measurements:", error);

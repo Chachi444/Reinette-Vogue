@@ -417,6 +417,56 @@ table tr:hover {
   color: #800020;
 }
 
+/* Style Inspiration in Admin */
+.style-inspiration {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  border-left: 4px solid #d4af37;
+}
+
+.style-inspiration strong {
+  color: #800020;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.style-inspiration p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.inspiration-images {
+  margin-top: 1rem;
+}
+
+.admin-image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.admin-image-preview {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.admin-image-preview:hover {
+  transform: scale(1.05);
+}
+
+.admin-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .dashboard-tabs {

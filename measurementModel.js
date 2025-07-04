@@ -41,8 +41,6 @@ const gownMeasurementSchema = new mongoose.Schema({
         enum: ['inches', 'centimeters'],
         default: 'inches'
     },
-
-
     // Additional info
     notes: {
         type: String,
@@ -54,6 +52,35 @@ const gownMeasurementSchema = new mongoose.Schema({
         default: "Gown"
     },
 
+    // Style inspiration
+    styleInspiration: {
+        images: [{
+            publicId: String,
+            originalName: String,
+            cloudinaryUrl: String,
+            optimizedUrl: String,
+            size: Number,
+            format: String,
+            width: Number,
+            height: Number
+        }],
+        description: {
+            type: String,
+            default: ""
+        },
+        preferredColors: {
+            type: String,
+            default: ""
+        },
+        occasion: {
+            type: String,
+            default: ""
+        },
+        hasImages: {
+            type: Boolean,
+            default: false
+        }
+    },
 
     orderStatus: {
         type: String,
@@ -98,8 +125,6 @@ const trouserMeasurementSchema = new mongoose.Schema({
         enum: ['inches', 'centimeters'],
         default: 'inches'
     },
-
-
     // Additional info
     notes: {
         type: String,
@@ -111,6 +136,35 @@ const trouserMeasurementSchema = new mongoose.Schema({
         default: "Trouser"
     },
 
+    // Style inspiration
+    styleInspiration: {
+        images: [{
+            publicId: String,
+            originalName: String,
+            cloudinaryUrl: String,
+            optimizedUrl: String,
+            size: Number,
+            format: String,
+            width: Number,
+            height: Number
+        }],
+        description: {
+            type: String,
+            default: ""
+        },
+        preferredColors: {
+            type: String,
+            default: ""
+        },
+        occasion: {
+            type: String,
+            default: ""
+        },
+        hasImages: {
+            type: Boolean,
+            default: false
+        }
+    },
 
     orderStatus: {
         type: String,
@@ -165,6 +219,46 @@ const generalMeasurementSchema = new mongoose.Schema({
     measurementType: {
         type: String,
         default: "General"
+    },
+
+    // Style inspiration
+    styleInspiration: {
+        images: [{
+            publicId: String,
+            originalName: String,
+            cloudinaryUrl: String,
+            optimizedUrl: String,
+            size: Number,
+            format: String,
+            width: Number,
+            height: Number
+        }],
+        description: {
+            type: String,
+            default: ""
+        },
+        preferredColors: {
+            type: String,
+            default: ""
+        },
+        occasion: {
+            type: String,
+            default: ""
+        },
+        hasImages: {
+            type: Boolean,
+            default: false
+        }
+    },
+
+    orderStatus: {
+        type: String,
+        enum: ['pending', 'in_progress', 'completed', 'delivered'],
+        default: 'pending'
+    },
+
+    estimatedDelivery: {
+        type: Date
     }
 
 
