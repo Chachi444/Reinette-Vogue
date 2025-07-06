@@ -5,15 +5,111 @@
 }
 
 .services-hero h1 {
-  color: var(--oxblood).fabric-section {
+  color: var(--oxblood);
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+.services-hero p {
+  font-size: 1.3rem;
+  color: var(--charcoal);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  padding: 3rem 0;
+}
+
+.service-card {
+  background: var(--white);
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px var(--shadow);
+  transition: all 0.3s ease;
+  border: 1px solid var(--gold-light);
+}
+
+.service-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(128, 0, 32, 0.15);
+}
+
+.service-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  color: var(--white);
+}
+
+.service-icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.service-card h3 {
+  font-size: 1.5rem;
+  color: var(--oxblood);
+  margin-bottom: 1rem;
+}
+
+.service-card p {
+  color: var(--charcoal);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.service-features {
+  list-style: none;
+  margin-bottom: 1.5rem;
+}
+
+.service-features li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--gold-light);
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.service-features li:before {
+  content: "\2713";
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  font-weight: bold;
+}
+
+.service-features li:last-child {
+  border-bottom: none;
+}
+
+.service-specialty {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--gold-light);
+  border-radius: 20px;
+  text-align: center;
+}
+
+/* Special Services Section */
+.fabric-section {
   background: linear-gradient(135deg, var(--oxblood), var(--oxblood-dark));
   color: var(--white) !important;
   padding: 4rem 3rem;
   border-radius: 20px;
   text-align: center;
   margin: 3rem 0;
-}t-size: 3.5rem;
-  margin-bottom: 1rem;
 }
 
 .services-hero p {
@@ -79,7 +175,7 @@
 }
 
 .service-features li:before {
-  content: "✓";
+  content: "\2713";
   position: absolute;
   left: 0;
   color: var(--gold);
