@@ -5,8 +5,18 @@ import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+  const [registerForm, setRegisterForm] = useState({ 
+    username: '', 
+    password: '', 
+    confirmPassword: '',
+    fullName: '',
+    email: ''
+  });
   const [loginError, setLoginError] = useState('');
+  const [registerError, setRegisterError] = useState('');
+  const [registerSuccess, setRegisterSuccess] = useState('');
   const [activeTab, setActiveTab] = useState('appointments');
   const [appointments, setAppointments] = useState([]);
   const [gownMeasurements, setGownMeasurements] = useState([]);
@@ -35,24 +45,92 @@ const AdminDashboard = () => {
     e.preventDefault();
     setLoginError('');
     
-    // Simple authentication (in production, this should be done on the backend)
-    if (loginForm.username === 'reinetteadmin' && loginForm.password === 'ReinetteVogue2025!') {
+    // Get stored admin accounts from localStorage
+    const storedAdmins = JSON.parse(localStorage.getItem('adminAccounts') || '[]');
+    
+    // Check if credentials match any stored admin account
+    const validAdmin = storedAdmins.find(admin => 
+      admin.username === loginForm.username && admin.password === loginForm.password
+    );
+    
+    // Also check default admin account
+    const isDefaultAdmin = loginForm.username === 'reinetteadmin' && loginForm.password === 'ReinetteVogue2025!';
+    
+    if (validAdmin || isDefaultAdmin) {
       setIsAuthenticated(true);
       sessionStorage.setItem('adminAuth', 'authenticated');
+      sessionStorage.setItem('currentAdmin', JSON.stringify(validAdmin || { username: 'reinetteadmin', fullName: 'Default Admin' }));
     } else {
       setLoginError('Invalid credentials. Please try again.');
     }
   };
 
+  const handleRegister = (e) => {
+    e.preventDefault();
+    setRegisterError('');
+    setRegisterSuccess('');
+    
+    // Validation
+    if (registerForm.password !== registerForm.confirmPassword) {
+      setRegisterError('Passwords do not match.');
+      return;
+    }
+    
+    if (registerForm.password.length < 8) {
+      setRegisterError('Password must be at least 8 characters long.');
+      return;
+    }
+    
+    // Get existing admin accounts
+    const storedAdmins = JSON.parse(localStorage.getItem('adminAccounts') || '[]');
+    
+    // Check if username already exists
+    if (storedAdmins.some(admin => admin.username === registerForm.username)) {
+      setRegisterError('Username already exists. Please choose a different one.');
+      return;
+    }
+    
+    // Add new admin account
+    const newAdmin = {
+      id: Date.now().toString(),
+      username: registerForm.username,
+      password: registerForm.password,
+      fullName: registerForm.fullName,
+      email: registerForm.email,
+      createdAt: new Date().toISOString()
+    };
+    
+    storedAdmins.push(newAdmin);
+    localStorage.setItem('adminAccounts', JSON.stringify(storedAdmins));
+    
+    setRegisterSuccess('Admin account created successfully! You can now login.');
+    setRegisterForm({ username: '', password: '', confirmPassword: '', fullName: '', email: '' });
+    
+    // Auto switch to login form after 2 seconds
+    setTimeout(() => {
+      setShowRegister(false);
+      setRegisterSuccess('');
+    }, 2000);
+  };
+
   const handleLogout = () => {
     setIsAuthenticated(false);
     sessionStorage.removeItem('adminAuth');
+    sessionStorage.removeItem('currentAdmin');
     setLoginForm({ username: '', password: '' });
+    setShowRegister(false);
   };
 
   const handleLoginInputChange = (e) => {
     setLoginForm({
       ...loginForm,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleRegisterInputChange = (e) => {
+    setRegisterForm({
+      ...registerForm,
       [e.target.name]: e.target.value
     });
   };
@@ -299,61 +377,198 @@ const AdminDashboard = () => {
   );
 
   return (
+    
+
+
+
+
+
+
+
     <div className="admin-dashboard">
       {!isAuthenticated ? (
-        // Login Form
+        // Login/Register Form
         <div className="admin-login">
           <div className="login-container">
-            <motion.div 
-              className="login-form"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <div className="login-header">
-                <Lock size={40} />
-                <h2>Admin Access</h2>
-                <p>Please enter your credentials to continue</p>
-              </div>
-              
-              <form onSubmit={handleLogin}>
-                <div className="form-group">
-                  <label htmlFor="username">Username</label>
-                  <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value={loginForm.username}
-                    onChange={handleLoginInputChange}
-                    required
-                    autoComplete="username"
-                  />
+            {!showRegister ? (
+              // Login Form
+              <motion.div 
+                className="login-form"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <div className="login-header">
+                  <Lock size={40} />
+                  <h2>Admin Access</h2>
+                  <p>Please enter your credentials to continue</p>
                 </div>
                 
-                <div className="form-group">
-                  <label htmlFor="password">Password</label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={loginForm.password}
-                    onChange={handleLoginInputChange}
-                    required
-                    autoComplete="current-password"
-                  />
-                </div>
-                
-                {loginError && (
-                  <div className="login-error">
-                    {loginError}
+                <form onSubmit={handleLogin}>
+                  <div className="form-group">
+                    <label htmlFor="username">Username</label>
+                    <input
+                      type="text"
+                      id="username"
+                      name="username"
+                      value={loginForm.username}
+                      onChange={handleLoginInputChange}
+                      required
+                      autoComplete="username"
+                    />
                   </div>
-                )}
+                  
+                  <div className="form-group">
+                    <label htmlFor="password">Password</label>
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      value={loginForm.password}
+                      onChange={handleLoginInputChange}
+                      required
+                      autoComplete="current-password"
+                    />
+                  </div>
+                  
+                  {loginError && (
+                    <div className="login-error">
+                      {loginError}
+                    </div>
+                  )}
+                  
+                  <button type="submit" className="login-btn">
+                    Access Dashboard
+                  </button>
+                </form>
+
+                <div className="auth-switch">
+                  <p>Need to create an admin account?</p>
+                  <button 
+                    type="button" 
+                    className="switch-auth-btn"
+                    onClick={() => {
+                      setShowRegister(true);
+                      setLoginError('');
+                    }}
+                  >
+                    Register New Admin
+                  </button>
+                </div>
+              </motion.div>
+            ) : (
+              // Register Form
+              <motion.div 
+                className="login-form register-form"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <div className="login-header">
+                  <User size={40} />
+                  <h2>Register Admin</h2>
+                  <p>Create a new admin account</p>
+                </div>
                 
-                <button type="submit" className="login-btn">
-                  Access Dashboard
-                </button>
-              </form>
-            </motion.div>
+                <form onSubmit={handleRegister}>
+                  <div className="form-group">
+                    <label htmlFor="fullName">Full Name</label>
+                    <input
+                      type="text"
+                      id="fullName"
+                      name="fullName"
+                      value={registerForm.fullName}
+                      onChange={handleRegisterInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={registerForm.email}
+                      onChange={handleRegisterInputChange}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="regUsername">Username</label>
+                    <input
+                      type="text"
+                      id="regUsername"
+                      name="username"
+                      value={registerForm.username}
+                      onChange={handleRegisterInputChange}
+                      required
+                      autoComplete="new-username"
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="regPassword">Password</label>
+                    <input
+                      type="password"
+                      id="regPassword"
+                      name="password"
+                      value={registerForm.password}
+                      onChange={handleRegisterInputChange}
+                      required
+                      minLength="8"
+                      autoComplete="new-password"
+                    />
+                    <small>Password must be at least 8 characters long</small>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="confirmPassword">Confirm Password</label>
+                    <input
+                      type="password"
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      value={registerForm.confirmPassword}
+                      onChange={handleRegisterInputChange}
+                      required
+                      autoComplete="new-password"
+                    />
+                  </div>
+                  
+                  {registerError && (
+                    <div className="login-error">
+                      {registerError}
+                    </div>
+                  )}
+
+                  {registerSuccess && (
+                    <div className="register-success">
+                      {registerSuccess}
+                    </div>
+                  )}
+                  
+                  <button type="submit" className="login-btn register-btn">
+                    Create Admin Account
+                  </button>
+                </form>
+
+                <div className="auth-switch">
+                  <p>Already have an account?</p>
+                  <button 
+                    type="button" 
+                    className="switch-auth-btn"
+                    onClick={() => {
+                      setShowRegister(false);
+                      setRegisterError('');
+                      setRegisterSuccess('');
+                    }}
+                  >
+                    Back to Login
+                  </button>
+                </div>
+              </motion.div>
+            )}
           </div>
         </div>
       ) : (

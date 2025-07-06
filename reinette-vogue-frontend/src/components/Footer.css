@@ -174,6 +174,26 @@
   color: var(--gold);
 }
 
+/* Admin Footer Link */
+.footer-bottom-link.admin-footer-link {
+  background: rgba(212, 175, 55, 0.2);
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  border: 1px solid var(--gold);
+  opacity: 1;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.footer-bottom-link.admin-footer-link:hover {
+  background: var(--gold);
+  color: var(--oxblood) !important;
+  transform: translateY(-1px);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .footer {

@@ -62,6 +62,14 @@ const Navbar = () => {
               {item.label}
             </Link>
           ))}
+          {/* Admin Dashboard Link */}
+          <Link
+            to="/reinette-admin-dashboard-2025"
+            className={`navbar-link admin-link ${location.pathname === '/reinette-admin-dashboard-2025' ? 'active' : ''}`}
+            title="Admin Dashboard"
+          >
+            Admin
+          </Link>
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -82,6 +90,14 @@ const Navbar = () => {
             {item.label}
           </Link>
         ))}
+        {/* Admin Dashboard Link for Mobile */}
+        <Link
+          to="/reinette-admin-dashboard-2025"
+          className={`navbar-mobile-link admin-link ${location.pathname === '/reinette-admin-dashboard-2025' ? 'active' : ''}`}
+          onClick={closeMenu}
+        >
+          Admin Dashboard
+        </Link>
       </div>
     </nav>
   );
