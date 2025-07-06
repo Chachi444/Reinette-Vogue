@@ -18,24 +18,24 @@ const routes = require("./Routes");
 
 dotenv.config();
 
-console.log("URL from env:", process.env.MONGODB_URL);
+// console.log("URL from env:", process.env.MONGODB_URL);
 
 // Initialize payment gateways only if API keys are provided
-let stripe;
-let Paystack;
-let PAYSTACK_BASE_URL = "https://api.paystack.co";
-let PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+// // let stripe;
+// // let Paystack;
+// // let PAYSTACK_BASE_URL = "https://api.paystack.co";
+// // let PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 
-try {
-  if (process.env.STRIPE_SECRET_KEY) {
-    stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-  }
-  if (process.env.PAYSTACK_SECRET_KEY) {
-    Paystack = require("paystack")(process.env.PAYSTACK_SECRET_KEY);
-  }
-} catch (error) {
-  console.log("⚠️ Payment gateways not initialized - install stripe and paystack packages if needed");
-}
+// try {
+//   if (process.env.STRIPE_SECRET_KEY) {
+//     stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+//   }
+//   if (process.env.PAYSTACK_SECRET_KEY) {
+//     Paystack = require("paystack")(process.env.PAYSTACK_SECRET_KEY);
+//   }
+// } catch (error) {
+//   console.log("⚠️ Payment gateways not initialized - install stripe and paystack packages if needed");
+//}
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
