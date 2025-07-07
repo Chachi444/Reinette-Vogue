@@ -1115,78 +1115,34 @@ const handleDesignRequest = async (req, res) => {
 // Admin Login Controller
 const adminLogin = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
     // Validation
-    if (!email || !password) {
+    if (!username || !password) {
       return res.status(400).json({
         success: false,
-        message: "Email and password are required"
+        message: "Username and password are required"
       });
     }
 
-    // Check if Admin model exists and find admin
-    let admin;
+    // Get admin credentials from environment variable
+    let adminCredentials;
     try {
-      admin = await Admin.findOne({ email });
-    } catch (modelError) {
-      console.warn("Admin model not available, using default admin credentials");
-      
-      // Default admin credentials for development/testing
-      const defaultEmail = process.env.ADMIN_EMAIL || "admin@reinettevogue.com";
-      const defaultPassword = process.env.ADMIN_PASSWORD || "admin123";
-      
-      if (email === defaultEmail && password === defaultPassword) {
-        const token = jwt.sign(
-          { 
-            adminId: "default-admin", 
-            email: defaultEmail,
-            role: "admin" 
-          },
-          process.env.JWT_SECRET || "default-secret",
-          { expiresIn: "24h" }
-        );
-
-        return res.status(200).json({
-          success: true,
-          message: "Admin login successful",
-          data: {
-            token,
-            admin: {
-              id: "default-admin",
-              email: defaultEmail,
-              role: "admin"
-            }
-          }
-        });
-      } else {
-        return res.status(401).json({
-          success: false,
-          message: "Invalid credentials"
-        });
-      }
+      adminCredentials = JSON.parse(process.env.ADMIN_CREDENTIALS || '[]');
+    } catch (parseError) {
+      console.error("Error parsing admin credentials:", parseError);
+      return res.status(500).json({
+        success: false,
+        message: "Server configuration error"
+      });
     }
+
+    // Find matching admin
+    const admin = adminCredentials.find(
+      admin => admin.username === username && admin.password === password
+    );
 
     if (!admin) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid credentials"
-      });
-    }
-
-    // Check password
-    let passwordValid = false;
-    if (admin.password && typeof admin.password === 'string') {
-      // If password is hashed
-      if (admin.password.startsWith('$2')) {
-        passwordValid = await bcrypt.compare(password, admin.password);
-      } else {
-        // Plain text password (for development only)
-        passwordValid = password === admin.password;
-      }
-    }
-
-    if (!passwordValid) {
       return res.status(401).json({
         success: false,
         message: "Invalid credentials"
@@ -1196,9 +1152,10 @@ const adminLogin = async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       { 
-        adminId: admin._id, 
-        email: admin.email,
-        role: admin.role || "admin" 
+        adminId: admin.username, 
+        username: admin.username,
+        role: admin.role || "admin",
+        name: admin.name
       },
       process.env.JWT_SECRET || "default-secret",
       { expiresIn: "24h" }
@@ -1210,8 +1167,8 @@ const adminLogin = async (req, res) => {
       data: {
         token,
         admin: {
-          id: admin._id,
-          email: admin.email,
+          id: admin.username,
+          username: admin.username,
           name: admin.name,
           role: admin.role || "admin"
         }

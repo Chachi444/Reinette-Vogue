@@ -134,6 +134,21 @@
   display: flex;
   gap: 1rem;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+.admin-info {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.admin-info strong {
+  color: #d4af37;
+  font-weight: 600;
 }
 
 .refresh-btn {

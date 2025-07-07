@@ -28,7 +28,7 @@ function App() {
             <Route path="/book-appointment" element={<BookAppointment />} />
             <Route path="/measurement" element={<Measurement />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/reinette-admin-dashboard-2025" element={<AdminDashboard />} />
+            <Route path="/secret-atelier-management-x9k2p7" element={<AdminDashboard />} />
           </Routes>
         </main>
         <Footer />

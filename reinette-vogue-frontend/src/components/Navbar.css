@@ -112,54 +112,6 @@
   font-weight: 600;
 }
 
-/* Admin Dashboard Link Styles */
-.navbar-link.admin-link {
-  background: linear-gradient(45deg, var(--oxblood), #a30e2e);
-  color: white;
-  border-radius: 8px;
-  padding: 0.6rem 1.2rem;
-  font-weight: 600;
-  margin-left: 1rem;
-  border: 2px solid transparent;
-  text-transform: uppercase;
-  font-size: 0.9rem;
-  letter-spacing: 0.5px;
-  position: relative;
-  overflow: hidden;
-}
-
-.navbar-link.admin-link::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.6s ease;
-}
-
-.navbar-link.admin-link:hover::before {
-  left: 100%;
-}
-
-.navbar-link.admin-link::after {
-  display: none; /* Remove the underline effect for admin link */
-}
-
-.navbar-link.admin-link:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(128, 0, 32, 0.3);
-  color: white;
-  border-color: var(--gold);
-}
-
-.navbar-link.admin-link.active {
-  background: linear-gradient(45deg, #a30e2e, var(--oxblood));
-  color: white;
-  border-color: var(--gold);
-}
-
 .navbar-toggle {
   display: none;
   flex-direction: column;
@@ -211,28 +163,6 @@
 
 .navbar-mobile-link:last-child {
   border-bottom: none;
-}
-
-/* Mobile Admin Link Styles */
-.navbar-mobile-link.admin-link {
-  background: linear-gradient(45deg, var(--oxblood), #a30e2e);
-  color: white;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.9rem;
-  letter-spacing: 0.5px;
-  text-align: center;
-  margin: 0.5rem 1rem;
-  border-radius: 8px;
-  border-bottom: none;
-}
-
-.navbar-mobile-link.admin-link:hover,
-.navbar-mobile-link.admin-link.active {
-  background: linear-gradient(45deg, #a30e2e, var(--oxblood));
-  color: white;
-  padding-left: 2rem;
-  transform: scale(1.02);
 }
 
 /* Responsive Design */

@@ -90,7 +90,6 @@ const Footer = () => {
           <div className="footer-bottom-links">
             <button className="footer-bottom-link" onClick={() => console.log('Privacy Policy')}>Privacy Policy</button>
             <button className="footer-bottom-link" onClick={() => console.log('Terms of Service')}>Terms of Service</button>
-            <Link to="/reinette-admin-dashboard-2025" className="footer-bottom-link admin-footer-link">Admin</Link>
           </div>
         </div>
       </div>
