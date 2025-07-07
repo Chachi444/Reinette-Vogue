@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Ruler, Package, User, Lock } from 'lucide-react';
+import { API_ENDPOINTS, apiCall } from '../api';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -41,13 +42,10 @@ const AdminDashboard = () => {
     
     try {
       console.log('Attempting login with:', { username: loginForm.username });
-      console.log('Making request to:', 'https://reinette-vogue.onrender.com/admin/login');
+      console.log('Making request to:', API_ENDPOINTS.adminLogin);
       
-      const response = await fetch('https://reinette-vogue.onrender.com/admin/login', {
+      const response = await apiCall(API_ENDPOINTS.adminLogin, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           username: loginForm.username,
           password: loginForm.password
@@ -113,10 +111,10 @@ const AdminDashboard = () => {
     setError(''); 
     try {
       const [appointmentsRes, gownRes, trouserRes, generalRes] = await Promise.all([
-        fetch('https://reinette-vogue.onrender.com/appointments'),
-        fetch('https://reinette-vogue.onrender.com/gown-measurements'),
-        fetch('https://reinette-vogue.onrender.com/trouser-measurements'),
-        fetch('https://reinette-vogue.onrender.com/general-measurements')
+        apiCall(API_ENDPOINTS.appointments),
+        apiCall(API_ENDPOINTS.gownMeasurements),
+        apiCall(API_ENDPOINTS.trouserMeasurements),
+        apiCall(API_ENDPOINTS.generalMeasurements)
       ]);
 
       if (appointmentsRes.ok) {

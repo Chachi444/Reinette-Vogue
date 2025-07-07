@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, User } from 'lucide-react';
+import { API_ENDPOINTS, apiCall } from '../api';
 import './BookAppointment.css';
 
 const BookAppointment = () => {
@@ -42,12 +43,9 @@ const BookAppointment = () => {
     
     try {
       // Replace with your backend URL
-      const response = await fetch('https://reinette-vogue.onrender.com/book-appointment', {
+      const response = await apiCall(API_ENDPOINTS.bookAppointment, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formData)
       });
 
       if (response.ok) {

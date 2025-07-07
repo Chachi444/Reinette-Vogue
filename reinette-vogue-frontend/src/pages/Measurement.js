@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Ruler, User, Package, Upload, X, Clock } from 'lucide-react';
+import { API_ENDPOINTS, apiCall } from '../api';
 import './Measurement.css';
 
 const Measurement = () => {
@@ -153,21 +154,21 @@ const Measurement = () => {
       
       switch (activeTab) {
         case 'gown':
-          endpoint = 'body-measurement/gown';
+          endpoint = API_ENDPOINTS.submitGownMeasurement;
           measurementData = gownData;
           selectedImages.gown.forEach((file, index) => {
             formData.append('inspirationImages', file);
           });
           break;
         case 'trouser':
-          endpoint = 'body-measurement/trouser';
+          endpoint = API_ENDPOINTS.submitTrouserMeasurement;
           measurementData = trouserData;
           selectedImages.trouser.forEach((file, index) => {
             formData.append('inspirationImages', file);
           });
           break;
         case 'general':
-          endpoint = 'body-measurement';
+          endpoint = API_ENDPOINTS.submitGeneralMeasurement;
           measurementData = generalData;
           selectedImages.general.forEach((file, index) => {
             formData.append('inspirationImages', file);
@@ -189,8 +190,7 @@ const Measurement = () => {
       formData.append('preferredColors', measurementData.preferredColors || '');
       formData.append('occasion', measurementData.occasion || '');
 
-      // Replace with your backend URL
-      const response = await fetch(`https://reinette-vogue.onrender.com/${endpoint}`, {
+      const response = await apiCall(endpoint, {
         method: 'POST',
         body: formData, // Using FormData instead of JSON for file upload
       });
