@@ -42,7 +42,7 @@ const BookAppointment = () => {
     
     try {
       // Replace with your backend URL
-      const response = await fetch('http://localhost:5000/book-appointment', {
+      const response = await fetch('https://reinette-vogue.onrender.com/book-appointment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

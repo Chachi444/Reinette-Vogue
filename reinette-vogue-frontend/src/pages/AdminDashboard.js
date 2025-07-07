@@ -40,7 +40,10 @@ const AdminDashboard = () => {
     setLoading(true);
     
     try {
-      const response = await fetch('/api/admin/login', {
+      console.log('Attempting login with:', { username: loginForm.username });
+      console.log('Making request to:', 'https://reinette-vogue.onrender.com/admin/login');
+      
+      const response = await fetch('https://reinette-vogue.onrender.com/admin/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,7 +54,15 @@ const AdminDashboard = () => {
         })
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
+      console.log('Response data:', data);
 
       if (data.success) {
         setIsAuthenticated(true);
@@ -63,8 +74,19 @@ const AdminDashboard = () => {
         setLoginError(data.message || 'Invalid credentials. Please try again.');
       }
     } catch (error) {
-      console.error('Login error:', error);
-      setLoginError('Login failed. Please check your connection and try again.');
+      console.error('Login error details:', error);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+      
+      if (error.message.includes('Failed to fetch')) {
+        setLoginError('Cannot connect to server. Please check if the backend is running.');
+      } else if (error.message.includes('NetworkError')) {
+        setLoginError('Network error. Please check your internet connection.');
+      } else if (error.message.includes('CORS')) {
+        setLoginError('CORS error. Please check backend CORS configuration.');
+      } else {
+        setLoginError(`Connection error: ${error.message}`);
+      }
     } finally {
       setLoading(false);
     }
@@ -88,14 +110,13 @@ const AdminDashboard = () => {
 
   const fetchAllData = async () => {
     setLoading(true);
-    setError('');
-    
+    setError(''); 
     try {
       const [appointmentsRes, gownRes, trouserRes, generalRes] = await Promise.all([
-        fetch('http://localhost:5000/appointments'),
-        fetch('http://localhost:5000/gown-measurements'),
-        fetch('http://localhost:5000/trouser-measurements'),
-        fetch('http://localhost:5000/general-measurements')
+        fetch('https://reinette-vogue.onrender.com/appointments'),
+        fetch('https://reinette-vogue.onrender.com/gown-measurements'),
+        fetch('https://reinette-vogue.onrender.com/trouser-measurements'),
+        fetch('https://reinette-vogue.onrender.com/general-measurements')
       ]);
 
       if (appointmentsRes.ok) {

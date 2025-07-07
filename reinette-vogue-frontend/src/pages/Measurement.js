@@ -190,7 +190,7 @@ const Measurement = () => {
       formData.append('occasion', measurementData.occasion || '');
 
       // Replace with your backend URL
-      const response = await fetch(`http://localhost:5000/${endpoint}`, {
+      const response = await fetch(`https://reinette-vogue.onrender.com/${endpoint}`, {
         method: 'POST',
         body: formData, // Using FormData instead of JSON for file upload
       });
